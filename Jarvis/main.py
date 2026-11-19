@@ -1,9 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from nlp_engine import jarvis_nlp
 
 import jarvis_nlp  # Import the JarvisNLP instance from nlp_engine.py
 from ai_engine import generate_response
+
+from command_executor import execute_command
+
+from fastapi.middleware.cors import CORSMiddleware
 
 from response import (
     success_response,
@@ -17,6 +20,16 @@ app = FastAPI(
     title="Nexus JARVIS",
     description="AI-powered natural language service for Nexus",
     version="2.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -53,12 +66,17 @@ def process_command(request: CommandRequest):
                 detail="Command cannot be empty"
             )
 
-        result = jarvis_nlp.process_command(request.text)
+        # Step 1: Understand the command
+        nlp_result = jarvis_nlp.process_command(request.text)
+
+        # Step 2: Execute the command
+        execution_result = execute_command(nlp_result)
 
         return {
-            "success": True,
+            "success": execution_result.get("success"),
             "input": request.text,
-            "response": result
+            "intent": nlp_result,
+            "response": execution_result
         }
 
     except HTTPException:
@@ -68,7 +86,7 @@ def process_command(request: CommandRequest):
         raise HTTPException(
             status_code=500,
             detail=str(e)
-        )   
+        )  
         
 # JARVIS AI Chat Endpoint
 @app.post("/chat")

@@ -34,7 +34,7 @@ class NexusBackendClient:
                 "data": response.json()
             }
 
-        except requests.exceptions.HTTPError as e:
+        except requests.exceptions.HTTPError:
 
             try:
                 error_data = response.json()
@@ -74,130 +74,111 @@ class NexusBackendClient:
 
     def get_tasks(self, user_id):
         return self.request(
-            "GET",
-            "/api/tasks",
+            "GET", "/api/tasks",
             params={"user_id": user_id}
         )
 
-    def get_task(self, task_id):
+    def get_task(self, task_id, user_id):
         return self.request(
-            "GET",
-            f"/api/tasks/{task_id}"
+            "GET", f"/api/tasks/{task_id}",
+            params={"user_id": user_id}
         )
 
     def create_task(self, task_data):
-        return self.request(
-            "POST",
-            "/api/tasks",
-            data=task_data
-        )
+        return self.request("POST", "/api/tasks", data=task_data)
 
     def update_task(self, task_id, task_data):
-        return self.request(
-            "PUT",
-            f"/api/tasks/{task_id}",
-            data=task_data
-        )
+        return self.request("PUT", f"/api/tasks/{task_id}", data=task_data)
 
-    def delete_task(self, task_id):
+    def delete_task(self, task_id, user_id):
         return self.request(
-            "DELETE",
-            f"/api/tasks/{task_id}"
+            "DELETE", f"/api/tasks/{task_id}",
+            params={"user_id": user_id}
         )
 
     # NOTE OPERATIONS
 
     def get_notes(self, user_id):
         return self.request(
-            "GET",
-            "/api/notes",
+            "GET", "/api/notes",
+            params={"user_id": user_id}
+        )
+
+    def get_note(self, note_id, user_id):
+        return self.request(
+            "GET", f"/api/notes/{note_id}",
             params={"user_id": user_id}
         )
 
     def create_note(self, note_data):
-        return self.request(
-            "POST",
-            "/api/notes",
-            data=note_data
-        )
+        return self.request("POST", "/api/notes", data=note_data)
 
     def update_note(self, note_id, note_data):
-        return self.request(
-            "PUT",
-            f"/api/notes/{note_id}",
-            data=note_data
-        )
+        return self.request("PUT", f"/api/notes/{note_id}", data=note_data)
 
-    def delete_note(self, note_id):
+    def delete_note(self, note_id, user_id):
         return self.request(
-            "DELETE",
-            f"/api/notes/{note_id}"
+            "DELETE", f"/api/notes/{note_id}",
+            params={"user_id": user_id}
         )
 
     # GOAL OPERATIONS
 
     def get_goals(self, user_id):
         return self.request(
-            "GET",
-            "/api/goals",
+            "GET", "/api/goals",
+            params={"user_id": user_id}
+        )
+
+    def get_goal(self, goal_id, user_id):
+        return self.request(
+            "GET", f"/api/goals/{goal_id}",
             params={"user_id": user_id}
         )
 
     def create_goal(self, goal_data):
-        return self.request(
-            "POST",
-            "/api/goals",
-            data=goal_data
-        )
+        return self.request("POST", "/api/goals", data=goal_data)
 
     def update_goal(self, goal_id, goal_data):
-        return self.request(
-            "PUT",
-            f"/api/goals/{goal_id}",
-            data=goal_data
-        )
+        return self.request("PUT", f"/api/goals/{goal_id}", data=goal_data)
 
-    def delete_goal(self, goal_id):
+    def delete_goal(self, goal_id, user_id):
         return self.request(
-            "DELETE",
-            f"/api/goals/{goal_id}"
+            "DELETE", f"/api/goals/{goal_id}",
+            params={"user_id": user_id}
         )
 
     # CALENDAR OPERATIONS
 
     def get_events(self, user_id):
         return self.request(
-            "GET",
-            "/api/calendar",
+            "GET", "/api/calendar",
+            params={"user_id": user_id}
+        )
+
+    def get_event(self, event_id, user_id):
+        return self.request(
+            "GET", f"/api/calendar/{event_id}",
             params={"user_id": user_id}
         )
 
     def create_event(self, event_data):
-        return self.request(
-            "POST",
-            "/api/calendar",
-            data=event_data
-        )
+        return self.request("POST", "/api/calendar", data=event_data)
 
     def update_event(self, event_id, event_data):
-        return self.request(
-            "PUT",
-            f"/api/calendar/{event_id}",
-            data=event_data
-        )
+        return self.request("PUT", f"/api/calendar/{event_id}", data=event_data)
 
-    def delete_event(self, event_id):
+    def delete_event(self, event_id, user_id):
         return self.request(
-            "DELETE",
-            f"/api/calendar/{event_id}"
+            "DELETE", f"/api/calendar/{event_id}",
+            params={"user_id": user_id}
         )
 
     # DASHBOARD
 
     def get_dashboard(self, user_id):
         return self.request(
-            "GET",
-            f"/api/dashboard/{user_id}"
+            "GET", f"/api/dashboard/{user_id}"
         )
 
 
