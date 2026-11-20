@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+import time
 
 import jarvis_nlp  # Import the JarvisNLP instance from nlp_engine.py
 from ai_engine import generate_response
@@ -91,6 +92,9 @@ def process_command(request: CommandRequest):
 # JARVIS AI Chat Endpoint
 @app.post("/chat")
 def chat(request: ChatRequest):
+
+    start_time = time.perf_counter()
+
     try:
         if not request.text.strip():
             raise HTTPException(
@@ -100,10 +104,14 @@ def chat(request: ChatRequest):
 
         session_id = request.session_id
 
-        # Get previous conversation context
+        # Retrieve conversation context
+        context_start = time.perf_counter()
+
         context = conversation_memory.get_context(session_id)
 
-        # Save current user message
+        context_time = time.perf_counter() - context_start
+
+        # Save user message
         conversation_memory.add_message(
             session_id,
             "user",
@@ -111,10 +119,14 @@ def chat(request: ChatRequest):
         )
 
         # Generate AI response
+        ai_start = time.perf_counter()
+
         result = generate_response(
             prompt=request.text,
             context=context
         )
+
+        ai_time = time.perf_counter() - ai_start
 
         if not result.get("success"):
             return error_response(
@@ -124,12 +136,20 @@ def chat(request: ChatRequest):
 
         answer = result.get("response")
 
-        # Save JARVIS response
+        # Save assistant response
         conversation_memory.add_message(
             session_id,
             "assistant",
             answer
         )
+
+        total_time = time.perf_counter() - start_time
+
+        print("\n========== JARVIS PERFORMANCE ==========")
+        print(f"Context retrieval: {context_time:.2f} seconds")
+        print(f"AI generation:     {ai_time:.2f} seconds")
+        print(f"Total processing:  {total_time:.2f} seconds")
+        print("========================================\n")
 
         return jarvis_response(
             message=answer,
@@ -137,7 +157,8 @@ def chat(request: ChatRequest):
             data={
                 "session_id": session_id,
                 "provider": result.get("provider"),
-                "model": result.get("model")
+                "model": result.get("model"),
+                "processing_time": round(total_time, 2)
             }
         )
 
