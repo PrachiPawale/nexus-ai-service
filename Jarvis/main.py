@@ -27,7 +27,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:4200",
-        "https://prachipawale.github.io/nexus-frontend/dashboard"
+        "https://prachipawale.github.io/nexus-frontend/"
     ],
     allow_credentials=True,
     allow_methods=["*"],
