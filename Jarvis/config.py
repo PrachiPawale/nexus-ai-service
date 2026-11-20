@@ -42,7 +42,7 @@ class Settings:
     # CORS
     ALLOWED_ORIGINS = os.getenv(
         "ALLOWED_ORIGINS",
-        "http://localhost:4200"
+        "http://localhost:4200,https://prachipawale.github.io"
     ).split(",")
 
 
