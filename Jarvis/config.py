@@ -12,7 +12,7 @@ class Settings:
 
     # Server
     DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-    HOST = os.getenv("HOST", "127.0.0.1")
+    HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", 8000))
 
     # AI Provider
